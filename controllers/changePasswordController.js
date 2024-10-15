@@ -2,9 +2,15 @@ const {db} = require('../model/firebaseAdmin');
 const bcrypt = require('bcrypt');
 
 const handleChangePassword = async (req, res) => {
-    const {user_email, password} = req.body;
+    const {user_email, password, api_key} = req.body;
     if (!user_email || !password) {
         return res.status(400).json({message: 'email and password are required'});
+    }
+
+    const connectere_api_key = process.env.CONNECTERE_API_KEY;
+
+    if (api_key !== connectere_api_key) {
+        return res.status(401).json({message: "unauthorized"});
     }
 
     try {

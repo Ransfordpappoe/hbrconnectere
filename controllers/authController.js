@@ -16,11 +16,12 @@ const handleLogin = async (req, res) => {
         }
         
         const userData = snapshot.val();
-        const verifiedPwd = await bcrypt.compare(password, userData.password);
+        const verifiedPwd = await bcrypt.compare(password, userData?.password);
         if (verifiedPwd) {
             res.status(201).json({
                 profile_pic: userData.profile_pic,
-                userName: userData.userName
+                userName: userData.userName,
+                bio: userData.bio != null ? userData.bio : ""
             });
         //    return res.status(201).json({success: `Login successful`});
         }else{

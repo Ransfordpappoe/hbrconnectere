@@ -1,9 +1,15 @@
 const {db} = require('../model/firebaseAdmin');
 
 const handleUpdateAccount = async (req, res) => {
-    const {userName, user_email, password, profile_pic, bio} = req.body;
+    const {userName, user_email, password, profile_pic, bio, api_key} = req.body;
     if (!userName || !user_email) {
         return res.status(400).json({message: 'Username is required'});
+    }
+
+    const connectere_api_key = process.env.CONNECTERE_API_KEY;
+
+    if (api_key !== connectere_api_key) {
+        return res.status(401).json({message: "unauthorized"});
     }
 
     try {
@@ -16,7 +22,8 @@ const handleUpdateAccount = async (req, res) => {
                 userName,
                 user_email,
                 password : password != null ? password : "",
-                profile_pic: profile_pic != null ? profile_pic : ""
+                profile_pic: profile_pic != null ? profile_pic : "",
+                bio: bio != null ? bio : ""
             });
         }else{
             await user_ref.update({
