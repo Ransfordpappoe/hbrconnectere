@@ -12,8 +12,9 @@ const handleUpdateAccount = async (req, res) => {
     if (api_key !== connectere_api_key) {
         return res.status(401).json({message: "unauthorized"});
     }
-    const encryptedPwd = await bcrypt.hash(password, 10);
+
     try {
+        const encryptedPwd = password && password != "" ? await bcrypt.hash(password, 10) : "";
         const sanitizeEmail = user_email.replace(/[^a-zA-Z0-9]/g, '');
         const user_ref = db.ref(`User Account/${sanitizeEmail}`);
         const snapshot = await user_ref.once('value');
@@ -22,15 +23,15 @@ const handleUpdateAccount = async (req, res) => {
             await user_ref.set({
                 userName,
                 user_email,
-                password : password != null ? encryptedPwd : "",
-                profile_pic: profile_pic != null ? profile_pic : "",
-                bio: bio != null ? bio : ""
+                password : password ? encryptedPwd : "",
+                profile_pic: profile_pic ? profile_pic : "",
+                bio: bio ? bio : ""
             });
         }else{
             await user_ref.update({
                 userName,
-                profile_pic: profile_pic != null ? profile_pic : "",
-                bio: bio != null ? bio : ""
+                profile_pic: profile_pic ? profile_pic : "",
+                bio: bio ? bio : ""
             });
         }
 

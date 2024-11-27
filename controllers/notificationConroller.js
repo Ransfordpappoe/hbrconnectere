@@ -29,7 +29,8 @@ const handleNotification = async(req, res)=>{
 
         const response = await admin.messaging().send(message);
         res.status(201).json({success: `successfully sent message: ${response}`});
-        const collectionPath = process.env.COLLECTION_PATH;
+        // const collectionPath = process.env.COLLECTION_PATH;
+        const collectionPath = "notificationtest";
         const docID = format(new Date(), "yyyyMMddHHmmss");
         await firestore.collection(collectionPath).doc(docID).set({
             docID,
