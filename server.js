@@ -1,12 +1,15 @@
 require('dotenv').config();
 const express = require('express');
+// const http = require('http');
 const app = express();
 const path = require('path');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const {logger} = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
-const PORT =  process.env.PORT || 3500;
+const PORT =  process.env.PORT || 8000;
+
+
 
 app.use(logger);
 app.use(cors(corsOptions));
@@ -32,6 +35,5 @@ app.all('*',(req, res)=>{
         res.type('txt').send("404 Not Found");
     }
 });
-
 app.use(errorHandler);
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));
