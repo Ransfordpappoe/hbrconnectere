@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const notificationController = require('../../controllers/notificationConroller');
 
-router.post('/', notificationController.handleNotification);
+router.use("/books",require("./booksNotification"));
+router.use("/blogs",require("./blogNotification"));
+router.use("/chats",require("./chatsNotification"));
+router.use("/other",require("./otherNotifications"));
 module.exports = router;
