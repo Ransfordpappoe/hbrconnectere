@@ -72,10 +72,10 @@ const handleUpdateMessage = async(req, res)=>{
         return res.status(401).json({message: "unauthorized"});
     }
     const sanitizeEmail = user_email.replace(/[^a-zA-Z0-9]/g, '');
-        const user_ref = db.ref(`User Account/${sanitizeEmail}/status`);
-        const snapshot = await user_ref.once('value');
-        if (!snapshot.exists() || snapshot.val() !== process.env.ADMIN_CODE) {
-            return res.status(409).json({message: "you are not authorized to update messages"});
+    const user_ref = db.ref(`User Account/${sanitizeEmail}/status`);
+    const snapshot = await user_ref.once('value');
+    if (!snapshot.exists() || snapshot.val() !== process.env.ADMIN_CODE) {
+        return res.status(409).json({message: "you are not authorized to update messages"});
     }
 
     try {
