@@ -2,8 +2,8 @@ const {db} = require('../model/firebaseAdmin');
 const bcrypt = require('bcrypt');
 
 const handleUpdateAccount = async (req, res) => {
-    const {userName, user_email, password, profile_pic, bio, api_key} = req.body;
-    if (!userName || !user_email) {
+    const {userName, user_email, password, profile_pic, bio, status, api_key} = req.body;
+    if (!user_email) {
         return res.status(400).json({message: 'Username is required'});
     }
 
@@ -14,30 +14,22 @@ const handleUpdateAccount = async (req, res) => {
     }
 
     try {
-        const encryptedPwd = password && password != "" ? await bcrypt.hash(password, 10) : "";
         const sanitizeEmail = user_email.replace(/[^a-zA-Z0-9]/g, '');
         const user_ref = db.ref(`User Account/${sanitizeEmail}`);
         const snapshot = await user_ref.once('value');
         if (!snapshot.exists()) {
-            //migrate old user information into new users database reference
-            await user_ref.set({
-                userName,
-                user_email,
-                password : password ? encryptedPwd : "",
-                profile_pic: profile_pic ? profile_pic : "",
-                bio: bio ? bio : ""
-            });
-        }else{
-            await user_ref.update({
-                userName,
-                profile_pic: profile_pic ? profile_pic : "",
-                bio: bio ? bio : ""
-            });
+            return res.status(404).json({message: "user not found"});
         }
+        const updateProfile = {};
+        if (userName) updateProfile.userName = userName;
+        if (profile_pic) updateProfile.profile_pic = profile_pic;
+        if (bio) updateProfile.bio = bio;
+        if (status) updateProfile.status = status
+        await user_ref.update(updateProfile);
 
-        res.status(201).json({success: `Account for ${userName} is successfully updated`});
+        return res.status(201).json({success: `${userName ? `Account for ${userName}`:'Your account'} is successfully updated`});
     } catch (error) {
-        res.status(500).json({message: error.message});
+        return res.status(500).json({message: error.message});
     }
 };
 module.exports = {handleUpdateAccount};

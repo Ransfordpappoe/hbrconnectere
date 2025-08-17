@@ -281,10 +281,9 @@ const handleReviewsNotification = async(req, res)=>{
         return res.status(409).json({message: "title, text, review id, book title, doc id and topic for notification are required"});
     }
 
-
-    // if (api_key !== connectere_api_key) {
-    //     return res.status(401).json({message: "unauthorized"});
-    // }
+    if (api_key !== connectere_api_key) {
+        return res.status(401).json({message: "unauthorized"});
+    }
 
     try {
         const message = {
