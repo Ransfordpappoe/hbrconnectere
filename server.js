@@ -7,7 +7,7 @@ const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const {logger} = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
-const PORT =  process.env.PORT || 8080;
+const PORT =  process.env.PORT || 8000;
 
 
 
@@ -26,6 +26,7 @@ app.use("/notification", require('./routes/api/notification'));
 app.use("/sendOtp", require('./routes/api/sendOtp'));
 app.use("/uploadMessage", require('./routes/api/uploadHrmwMessage'));
 app.use("/updateMessage", require('./routes/api/updateHrmwMessage'));
+app.use("/deleteMessage", require('./routes/api/deleteHrmwMessage'));
 
 app.all('*',(req, res)=>{
     res.status(404);

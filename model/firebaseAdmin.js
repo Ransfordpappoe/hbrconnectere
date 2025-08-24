@@ -5,8 +5,10 @@ admin.initializeApp({
         clientEmail: process.env.CLIENT_EMAIL,
         projectId: process.env.PROJECT_ID
     }),
-    databaseURL: process.env.DATABASE_URL
+    databaseURL: process.env.DATABASE_URL,
+    storageBucket: process.env.STORAGE_BUCKET
 });
 const db = admin.database();
 const firestore = admin.firestore();
-module.exports = {db, admin, firestore};
+const storageDB = admin.storage();
+module.exports = {db, admin, firestore, storageDB};
