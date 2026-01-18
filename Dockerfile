@@ -32,11 +32,15 @@ RUN npm ci --omit=dev
 #for dev
 # RUN npm ci
 
-# Run the application as a non-root user.
-USER node
-
 # Copy the rest of the source files into the image.
 COPY . .
+
+# Create log directories and ensure proper permissions for the node user
+RUN mkdir -p /usr/src/app/logs /usr/src/app/public/text && \
+    chown -R node:node /usr/src/app
+
+# Run the application as a non-root user.
+USER node
 
 # Expose the port that the application listens on.
 EXPOSE 8080
