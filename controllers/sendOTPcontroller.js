@@ -29,34 +29,35 @@ const generateOtpCode = () => {
 };
 
 const sendVerificationCode = async (req, res) => {
-  const { email, messageBody, messageTitle } = req.body;
-  if (!email || !messageBody || !messageTitle) {
-    return res
-      .status(400)
-      .json({ message: "email, messageBody and messageTitle are required" });
-  }
+  try {
+    const { email, messageBody, messageTitle } = req.body;
+    if (!email || !messageBody || !messageTitle) {
+      return res
+        .status(400)
+        .json({ message: "email, messageBody and messageTitle are required" });
+    }
 
-  const isDomainValid = await isEmailDomainValid(email);
-  if (!isDomainValid) {
-    return res.status(401).json({ message: "inivalid email" });
-  }
+    const isDomainValid = await isEmailDomainValid(email);
+    if (!isDomainValid) {
+      return res.status(401).json({ message: "inivalid email" });
+    }
 
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.DELIVERY_EMAIL,
-      pass: process.env.APPPWD,
-    },
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.DELIVERY_EMAIL,
+        pass: process.env.APPPWD,
+      },
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
 
-  const otp = generateOtpCode();
+    const otp = generateOtpCode();
 
-  const htmlTemplate = `
+    const htmlTemplate = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -119,17 +120,29 @@ const sendVerificationCode = async (req, res) => {
             </html>  
         `;
 
-  try {
+    // transporter.sendMail({
+    //   from: {
+    //     name: `Horemow Book Reader App`,
+    //     address: process.env.DELIVERY_EMAIL,
+    //   },
+    //   to: email,
+    //   subject: messageTitle,
+    //   html: htmlTemplate,
+    //   replyTo: process.env.DELIVERY_EMAIL,
+    // });
     transporter.sendMail({
       from: {
-        name: `Verification code - Horemow Book Reader`,
-        address: process.env.DELIVERY_EMAIL,
+        name: `Horemow Book Reader App`,
+        address: "no-reply@horemowbookreader.mooo.com",
       },
       to: email,
       subject: messageTitle,
+      text: `Hello, Your verification code is ${otp}. If you did not request this, you can ignore this message. \n\n
+      © ${new Date().getFullYear()} Horemow Book Reader | BethelSoftwareTeam | All rights reserved.`,
       html: htmlTemplate,
-      replyTo: "hbrsoftteam@gmail.com",
+      replyTo: "support@horemowbookreader.mooo.com",
     });
+
     return res.status(201).json({
       vcode: otp,
     });

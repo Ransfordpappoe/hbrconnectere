@@ -606,8 +606,8 @@ const contactUsNotification = async (req, res) => {
   const { name, contact, email, subject, message, contactId } = req.body;
 
   try {
-    if (!name || !contactId) {
-      return res.status(409).json({ message: "invalid sender details" });
+    if (!name || !contactId || !message || !email || !subject) {
+      return res.status(409).json({ message: "invalid message payload." });
     }
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -675,11 +675,6 @@ const contactUsNotification = async (req, res) => {
                     </div>
                     <div class="content">
                         <p>${message}</p> <br/>
-                        <h3>Sender Details</h3>
-                        <p><strong>name:</strong> ${name}</p>
-                        <p><strong>contact:</strong> ${contact}</p>
-                        <p><strong>email:</strong> ${email}</p>
-                        <p><strong>contact id:</strong> ${contactId}</p>
                     </div>
                     <div class="footer">
                         <p>© ${new Date().getFullYear()} bethelSoftwareTeam | Horemow Book Reader | All rights reserved.</p>
@@ -692,11 +687,14 @@ const contactUsNotification = async (req, res) => {
     try {
       transporter.sendMail({
         from: {
-          name: `Feedback - ${name}`,
-          address: process.env.DELIVERY_EMAIL,
+          name: `Horemow Book Reader Feedback`,
+          address: "support@horemowbookreader.mooo.com",
         },
         to: process.env.DEV_MAIL,
         subject: `${subject}`,
+        text: `New contact message from ${name}. Contact Id: ${contactId}\n\n
+        ${message}\n\n
+        © ${new Date().getFullYear()} Horemow Book Reader | bethelSoftwareTeam | All rights reserved.`,
         html: htmlTemplate,
         replyTo: email,
       });

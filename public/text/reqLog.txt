@@ -1,0 +1,7 @@
+20260730	12:53:26	230d3e81-1377-4d09-a789-0222bdb670ac	GET	undefined	//wp1/wp-includes/wlwmanifest.xml
+20260730	12:53:26	0e3af160-3de2-4f5e-a07c-fa9f0997e581	GET	undefined	//test/wp-includes/wlwmanifest.xml
+20260730	12:53:26	33298280-4632-4e1d-9db3-50874fd64be2	GET	undefined	//media/wp-includes/wlwmanifest.xml
+20260730	12:53:26	e37cd046-a8e1-42dd-8298-0efab17bcaa5	GET	undefined	//wp2/wp-includes/wlwmanifest.xml
+20260730	12:53:27	7ed61172-bf51-48cc-a7c4-006f9fce8481	GET	undefined	//site/wp-includes/wlwmanifest.xml
+20260730	12:53:27	9cf11aa0-72ee-44e4-83e2-4d17653ad4fb	GET	undefined	//cms/wp-includes/wlwmanifest.xml
+20260730	12:53:27	55cfb5d1-cb5e-41e9-a3a1-31f2ac8ee4d9	GET	undefined	//sito/wp-includes/wlwmanifest.xml
