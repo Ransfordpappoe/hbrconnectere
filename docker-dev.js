@@ -101,7 +101,7 @@ if (stopOnly) {
 
 buildImage();
 
-if (buildOnly) {
+if (buildOnly && !deployOnly) {
   process.exit(0);
 }
 
@@ -111,4 +111,6 @@ if (deployOnly) {
   process.exit(0);
 }
 
-runContainer();
+if (!deployOnly) {
+  runContainer();
+}
