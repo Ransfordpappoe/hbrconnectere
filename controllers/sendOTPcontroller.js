@@ -42,19 +42,6 @@ const sendVerificationCode = async (req, res) => {
       return res.status(401).json({ message: "inivalid email" });
     }
 
-    let transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.DELIVERY_EMAIL,
-        pass: process.env.APPPWD,
-      },
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
-
     const otp = generateOtpCode();
 
     const htmlTemplate = `
@@ -120,27 +107,14 @@ const sendVerificationCode = async (req, res) => {
             </html>  
         `;
 
-    // transporter.sendMail({
-    //   from: {
-    //     name: `Horemow Book Reader App`,
-    //     address: process.env.DELIVERY_EMAIL,
-    //   },
-    //   to: email,
-    //   subject: messageTitle,
-    //   html: htmlTemplate,
-    //   replyTo: process.env.DELIVERY_EMAIL,
-    // });
-    transporter.sendMail({
-      from: {
-        name: `Horemow Book Reader App`,
-        address: "no-reply@horemowbookreader.mooo.com",
-      },
+    await sendEmail({
+      emailName: `Horemow Book Reader App`,
       to: email,
       subject: messageTitle,
       text: `Hello, Your verification code is ${otp}. If you did not request this, you can ignore this message. \n\n
       © ${new Date().getFullYear()} Horemow Book Reader | BethelSoftwareTeam | All rights reserved.`,
       html: htmlTemplate,
-      replyTo: "support@horemowbookreader.mooo.com",
+      replyTo: process.env.SUPPORT_EMAIL,
     });
 
     return res.status(201).json({

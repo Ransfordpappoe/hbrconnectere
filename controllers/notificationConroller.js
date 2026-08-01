@@ -1,5 +1,5 @@
 const { admin, firestore } = require("../model/firebaseAdmin");
-const nodemailer = require("nodemailer");
+const { sendEmail } = require("../utils/nodemailerConnection");
 
 const collectionPath = process.env.COLLECTION_PATH;
 // const collectionPath = "notificationtest";
@@ -605,24 +605,11 @@ const handleShortsNotification = async (req, res) => {
 const contactUsNotification = async (req, res) => {
   const { name, contact, email, subject, message, contactId } = req.body;
 
-  try {
-    if (!name || !contactId || !message || !email || !subject) {
-      return res.status(409).json({ message: "invalid message payload." });
-    }
-    let transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.DELIVERY_EMAIL,
-        pass: process.env.APPPWD,
-      },
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    });
+  if (!name || !contactId || !message || !email || !subject) {
+    return res.status(409).json({ message: "invalid message payload." });
+  }
 
-    const htmlTemplate = `
+  const htmlTemplate = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -684,25 +671,17 @@ const contactUsNotification = async (req, res) => {
             </html>  
         `;
 
-    try {
-      transporter.sendMail({
-        from: {
-          name: `Horemow Book Reader Feedback`,
-          address: "support@horemowbookreader.mooo.com",
-        },
-        to: process.env.DEV_MAIL,
-        subject: `${subject}`,
-        text: `New contact message from ${name}. Contact Id: ${contactId}\n\n
+  try {
+    await sendEmail({
+      emailName: `Horemow Book Reader Feedback`,
+      to: process.env.DEV_MAIL,
+      subject,
+      text: `New contact message from ${name}. Contact Id: ${contactId}\n\n
         ${message}\n\n
         © ${new Date().getFullYear()} Horemow Book Reader | bethelSoftwareTeam | All rights reserved.`,
-        html: htmlTemplate,
-        replyTo: email,
-      });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ error: `Email notification failed: ${error}` });
-    }
+      html: htmlTemplate,
+      replyTo: email,
+    });
 
     return res.status(201).json({ success: "message successfully delivered" });
   } catch (error) {
