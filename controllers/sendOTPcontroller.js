@@ -1,27 +1,5 @@
-const nodemailer = require("nodemailer");
-const dns = require("dns");
-
-function checkMxRecords(domain) {
-  return new Promise((resolve, reject) => {
-    dns.resolveMx(domain, (err, addresses) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(addresses && addresses.length > 0);
-      }
-    });
-  });
-}
-
-async function isEmailDomainValid(email) {
-  const domain = email.split("@")[1];
-  try {
-    const hasMxRecords = await checkMxRecords(domain);
-    return hasMxRecords;
-  } catch {
-    return false;
-  }
-}
+const { sendEmail } = require("../utils/nodemailerConnection");
+const { isEmailDomainValid } = require("../utils/validateEmail");
 
 const generateOtpCode = () => {
   const otp = Math.floor(100000 + Math.random() * 900000);

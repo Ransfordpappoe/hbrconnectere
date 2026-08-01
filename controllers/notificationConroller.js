@@ -1,5 +1,6 @@
 const { admin, firestore } = require("../model/firebaseAdmin");
 const { sendEmail } = require("../utils/nodemailerConnection");
+const { isEmailDomainValid } = require("../utils/validateEmail");
 
 const collectionPath = process.env.COLLECTION_PATH;
 // const collectionPath = "notificationtest";
@@ -607,6 +608,11 @@ const contactUsNotification = async (req, res) => {
 
   if (!name || !contactId || !message || !email || !subject) {
     return res.status(409).json({ message: "invalid message payload." });
+  }
+
+  const isDomainValid = await isEmailDomainValid(email);
+  if (!isDomainValid) {
+    return res.status(401).json({ message: "inivalid email" });
   }
 
   const htmlTemplate = `
